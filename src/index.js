@@ -4,8 +4,15 @@ const path = require('path');
 const http = require('http');
 require('dotenv').config();
 
-// Add crypto polyfill to fix "crypto is not defined" error
+// Add crypto and ReadableStream polyfills to fix compatibility errors in older Node.js versions
 global.crypto = require('crypto');
+if (!global.ReadableStream) {
+    try {
+        global.ReadableStream = require('stream/web').ReadableStream;
+    } catch (e) {
+        console.error('Failed to load ReadableStream polyfill:', e);
+    }
+}
 
 // Import discord-player and voice dependencies
 const { Player } = require('discord-player');

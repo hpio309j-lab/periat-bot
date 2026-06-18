@@ -3,6 +3,15 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
+// Add ReadableStream polyfill to fix compatibility errors in older Node.js versions
+if (!global.ReadableStream) {
+    try {
+        global.ReadableStream = require('stream/web').ReadableStream;
+    } catch (e) {
+        console.error('Failed to load ReadableStream polyfill:', e);
+    }
+}
+
 const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
