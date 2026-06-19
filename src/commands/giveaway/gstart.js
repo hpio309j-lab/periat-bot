@@ -84,9 +84,9 @@ module.exports = {
                 .setTitle('🎉 GIVEAWAY 🎉')
                 .setDescription(`**Prize:** ${prize}`)
                 .addFields(
-                    { name: '🔒 Hosted by', value: `<@${message.author.id}>`, inline: false },
-                    { name: '⏱ Ends', value: `<t:${Math.floor(endTime.getTime() / 1000)}:R>`, inline: false },
-                    { name: '👥 Entries', value: '0 participants', inline: false }
+                    { name: '<:1089507751207645204:1456347760843292846> Hosted by', value: `<@${message.author.id}>`, inline: false },
+                    { name: '<:blackstar:1457394084095463489> Ends', value: `<t:${Math.floor(endTime.getTime() / 1000)}:R>`, inline: false },
+                    { name: '<:1089507751207645204:1456347760843292846> Entries', value: '0 participants', inline: false }
                 );
 
             // إرسال رسالة الجيف اواي بدون أزرار

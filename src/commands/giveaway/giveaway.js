@@ -198,9 +198,9 @@ function buildGiveawayEmbed({ prize, winnerCount, endTime, hostId, giveawayId, d
         .setTitle('🎉 GIVEAWAY 🎉')
         .setDescription(`**Prize:** ${prize}`)
         .addFields(
-            { name: '🔒 Hosted by', value: `<@${hostId}>`, inline: false },
-            { name: '⏱ Ends', value: `<t:${Math.floor(endTime.getTime() / 1000)}:R>`, inline: false },
-            { name: '👥 Entries', value: `${entries} participant${entries === 1 ? '' : 's'}`, inline: false }
+            { name: '<:1089507751207645204:1456347760843292846> Hosted by', value: `<@${hostId}>`, inline: false },
+            { name: '<:blackstar:1457394084095463489> Ends', value: `<t:${Math.floor(endTime.getTime() / 1000)}:R>`, inline: false },
+            { name: '<:1089507751207645204:1456347760843292846> Entries', value: `${entries} participant${entries === 1 ? '' : 's'}`, inline: false }
         );
 
     if (description) {
@@ -396,8 +396,8 @@ async function rerollGiveawaySlash(interaction, client) {
                         .setTitle('🎉 Giveaway Rerolled 🎉')
                         .setDescription(`**Prize:** ${giveaway.prize}`)
                         .addFields(
-                            { name: '🔒 Hosted by', value: `<@${giveaway.hostId}>`, inline: false },
-                            { name: '👥 Winner(s)', value: winnerText, inline: false }
+                            { name: '<:1089507751207645204:1456347760843292846> Hosted by', value: `<@${giveaway.hostId}>`, inline: false },
+                            { name: '<:Wa_fngift:1457532899183034522> Winner(s)', value: winnerText, inline: false }
                         )
                 ]
             });
@@ -409,7 +409,7 @@ async function rerollGiveawaySlash(interaction, client) {
                         .setTitle('🎉 Giveaway Rerolled 🎉')
                         .setDescription(`No valid winner found for the reroll of **${giveaway.prize}**`)
                         .addFields(
-                            { name: '🔒 Hosted by', value: `<@${giveaway.hostId}>`, inline: false }
+                            { name: '<:1089507751207645204:1456347760843292846> Hosted by', value: `<@${giveaway.hostId}>`, inline: false }
                         )
                 ]
             });
@@ -585,9 +585,9 @@ async function editGiveawaySlash(interaction, client) {
                 .setTitle('🎉 GIVEAWAY 🎉')
                 .setDescription(`**Prize:** ${giveaway.prize}`)
                 .addFields(
-                    { name: '🔒 Hosted by', value: `<@${giveaway.hostId}>`, inline: false },
-                    { name: '⏱ Ends', value: `<t:${Math.floor(giveaway.endTime.getTime() / 1000)}:R>`, inline: false },
-                    { name: '👥 Entries', value: `${entryCount} participant${entryCount === 1 ? '' : 's'}`, inline: false }
+                    { name: '<:1089507751207645204:1456347760843292846> Hosted by', value: `<@${giveaway.hostId}>`, inline: false },
+                    { name: '<:blackstar:1457394084095463489> Ends', value: `<t:${Math.floor(giveaway.endTime.getTime() / 1000)}:R>`, inline: false },
+                    { name: '<:1089507751207645204:1456347760843292846> Entries', value: `${entryCount} participant${entryCount === 1 ? '' : 's'}`, inline: false }
                 );
 
             if (giveaway.description) {

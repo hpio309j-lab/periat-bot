@@ -59,9 +59,9 @@ async function endGiveaway(giveaway, client) {
                 .setTitle('🎉 GIVEAWAY ENDED 🎉')
                 .setDescription(`**Prize:** ${giveaway.prize}`)
                 .addFields(
-                    { name: '🔒 Hosted by', value: `<@${giveaway.hostId}>`, inline: false },
-                    { name: '⏱ Ended', value: `<t:${Math.floor(Date.now() / 1000)}:R>`, inline: false },
-                    { name: '👥 Winner(s)', value: winnerText, inline: false }
+                    { name: '<:1089507751207645204:1456347760843292846> Hosted by', value: `<@${giveaway.hostId}>`, inline: false },
+                    { name: '<:blackstar:1457394084095463489> Ended', value: `<t:${Math.floor(Date.now() / 1000)}:R>`, inline: false },
+                    { name: '<:Wa_fngift:1457532899183034522> Winner(s)', value: winnerText, inline: false }
                 );
 
             // Update the original message — no buttons
