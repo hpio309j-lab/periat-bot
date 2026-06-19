@@ -160,9 +160,7 @@ module.exports = {
                 client
             });
 
-            await message.reply({
-                content: `Giveaway started in <#${result.channelId}>!\nExample: \`${PREFIX_START} Nitro Boost 1d 3\``
-            });
+            // No reply — the giveaway embed is enough
         } catch (error) {
             console.error('Error starting giveaway via prefix:', error);
             await message.reply({
@@ -298,10 +296,7 @@ async function startGiveawaySlash(interaction, client) {
             client
         });
 
-        await interaction.reply({
-            content: `Giveaway started in <#${result.channelId}>!\nExample: \`-gstart Nitro Boost 1d 3\``,
-            ephemeral: true
-        });
+        await interaction.reply({ content: '✅', ephemeral: true });
     } catch (error) {
         console.error('Error starting giveaway:', error);
         await interaction.reply({
