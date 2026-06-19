@@ -12,7 +12,7 @@ const Giveaway = require('../../database/models/Giveaway');
 const { createGiveaway, formatTimeRemaining, endGiveaway: endGiveawayFlow, selectWinners } = require('../../utils/giveawayManager');
 const ms = require('ms');
 
-const GIVEAWAY_COLOR = '#3498db'; // Blue
+const GIVEAWAY_COLOR = '#1e3a5f'; // Dark Blue
 const PREFIX_START = '-gstart';    // Example: -gstart Nitro Boost 1d 3
 
 module.exports = {
@@ -212,9 +212,7 @@ function buildGiveawayEmbed({ prize, winnerCount, endTime, hostId, giveawayId, d
     const embed = new EmbedBuilder()
         .setColor(GIVEAWAY_COLOR)
         .setTitle('🎉 GIVEAWAY 🎉')
-        .addFields(fields)
-        .setFooter({ text: `Giveaway ID: ${giveawayId} • Click the button below to enter!` })
-        .setTimestamp(endTime);
+        .addFields(fields);
 
     return embed;
 }
@@ -615,9 +613,7 @@ async function editGiveawaySlash(interaction, client) {
             const updatedEmbed = new EmbedBuilder()
                 .setColor(GIVEAWAY_COLOR)
                 .setTitle('🎉 GIVEAWAY 🎉')
-                .addFields(updateFields)
-                .setFooter({ text: `Giveaway ID: ${giveaway._id} • Click the button below to enter!` })
-                .setTimestamp(giveaway.endTime);
+                .addFields(updateFields);
 
             await message.edit({ embeds: [updatedEmbed] });
         } catch (error) {

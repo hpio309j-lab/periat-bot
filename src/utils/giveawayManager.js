@@ -61,9 +61,7 @@ async function endGiveaway(giveaway, client) {
                     { name: 'Winner(s)', value: winnerText },
                     { name: 'Hosted by', value: `<@${giveaway.hostId}>` }
                 )
-                .setColor('#2ecc71')
-                .setTimestamp()
-                .setFooter({ text: `Giveaway ID: ${giveaway._id}` });
+                .setColor('#1e3a5f');
             
             // Update the original message
             const row = new ActionRowBuilder().addComponents(
@@ -87,7 +85,7 @@ async function endGiveaway(giveaway, client) {
                         new EmbedBuilder()
                             .setTitle('🎉 Giveaway Winners 🎉')
                             .setDescription(`You won the giveaway for **${giveaway.prize}**!`)
-                            .setColor('#f1c40f')
+                            .setColor('#1e3a5f')
                     ]
                 });
             } else {
@@ -96,7 +94,7 @@ async function endGiveaway(giveaway, client) {
                         new EmbedBuilder()
                             .setTitle('🎉 Giveaway Ended 🎉')
                             .setDescription(`No valid winner for **${giveaway.prize}**`)
-                            .setColor('#e74c3c')
+                            .setColor('#1e3a5f')
                     ]
                 });
             }
