@@ -96,12 +96,12 @@ module.exports = {
             // حساب وقت الانتهاء
             const endTime = new Date(Date.now() + duration);
 
-            // بناء الإمبيد (أزرق)
+            // بناء الإمبيد (أزرق) - نفس تصميم /giveaway start
             const giveawayEmbed = new EmbedBuilder()
-                .setColor(GIVEAWAY_COLOR)
+                .setColor('#3498db')
                 .setTitle('🎉 GIVEAWAY 🎉')
-                .setDescription(`**Prize:** ${prize}`)
                 .addFields(
+                    { name: 'Prize', value: prize, inline: true },
                     { name: 'Ends', value: `<t:${Math.floor(endTime.getTime() / 1000)}:R>`, inline: true },
                     { name: 'Winners', value: `${winnerCount}`, inline: true },
                     { name: 'Hosted by', value: `<@${message.author.id}>`, inline: true },
@@ -115,7 +115,7 @@ module.exports = {
                 new ButtonBuilder()
                     .setCustomId(`giveaway_enter_${giveaway._id}`)
                     .setLabel('Enter Giveaway')
-                    .setStyle(ButtonStyle.Success)
+                    .setStyle(ButtonStyle.Primary)
                     .setEmoji('🎉')
             );
 

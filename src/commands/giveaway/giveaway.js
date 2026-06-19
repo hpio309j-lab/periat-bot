@@ -197,22 +197,24 @@ function parsePrefixStart(content) {
 }
 
 function buildGiveawayEmbed({ prize, winnerCount, endTime, hostId, giveawayId, description, entries }) {
+    const fields = [
+        { name: 'Prize', value: prize, inline: true },
+        { name: 'Ends', value: `<t:${Math.floor(endTime.getTime() / 1000)}:R>`, inline: true },
+        { name: 'Winners', value: `${winnerCount}`, inline: true },
+        { name: 'Hosted by', value: `<@${hostId}>`, inline: true },
+        { name: 'Entries', value: `${entries} participant${entries === 1 ? '' : 's'}`, inline: true }
+    ];
+
+    if (description) {
+        fields.push({ name: 'Description', value: description, inline: false });
+    }
+
     const embed = new EmbedBuilder()
         .setColor(GIVEAWAY_COLOR)
         .setTitle('🎉 GIVEAWAY 🎉')
-        .setDescription(`**Prize:** ${prize}`)
-        .addFields(
-            { name: 'Ends', value: `<t:${Math.floor(endTime.getTime() / 1000)}:R>`, inline: true },
-            { name: 'Winners', value: `${winnerCount}`, inline: true },
-            { name: 'Hosted by', value: `<@${hostId}>`, inline: true },
-            { name: 'Entries', value: `${entries} participant${entries === 1 ? '' : 's'}`, inline: true }
-        )
+        .addFields(fields)
         .setFooter({ text: `Giveaway ID: ${giveawayId} • Click the button below to enter!` })
         .setTimestamp(endTime);
-
-    if (description) {
-        embed.addFields({ name: 'Description', value: description });
-    }
 
     return embed;
 }
@@ -598,22 +600,24 @@ async function editGiveawaySlash(interaction, client) {
             const message = await channel.messages.fetch(giveaway.messageId);
             const entryCount = giveaway.participants ? giveaway.participants.length : 0;
 
+            const updateFields = [
+                { name: 'Prize', value: giveaway.prize, inline: true },
+                { name: 'Ends', value: `<t:${Math.floor(giveaway.endTime.getTime() / 1000)}:R>`, inline: true },
+                { name: 'Winners', value: `${giveaway.winnerCount}`, inline: true },
+                { name: 'Hosted by', value: `<@${giveaway.hostId}>`, inline: true },
+                { name: 'Entries', value: `${entryCount} participant${entryCount === 1 ? '' : 's'}`, inline: true }
+            ];
+
+            if (giveaway.description) {
+                updateFields.push({ name: 'Description', value: giveaway.description, inline: false });
+            }
+
             const updatedEmbed = new EmbedBuilder()
                 .setColor(GIVEAWAY_COLOR)
                 .setTitle('🎉 GIVEAWAY 🎉')
-                .setDescription(`**Prize:** ${giveaway.prize}`)
-                .addFields(
-                    { name: 'Ends', value: `<t:${Math.floor(giveaway.endTime.getTime() / 1000)}:R>`, inline: true },
-                    { name: 'Winners', value: `${giveaway.winnerCount}`, inline: true },
-                    { name: 'Hosted by', value: `<@${giveaway.hostId}>`, inline: true },
-                    { name: 'Entries', value: `${entryCount} participant${entryCount === 1 ? '' : 's'}`, inline: true }
-                )
+                .addFields(updateFields)
                 .setFooter({ text: `Giveaway ID: ${giveaway._id} • Click the button below to enter!` })
                 .setTimestamp(giveaway.endTime);
-
-            if (giveaway.description) {
-                updatedEmbed.addFields({ name: 'Description', value: giveaway.description });
-            }
 
             await message.edit({ embeds: [updatedEmbed] });
         } catch (error) {
