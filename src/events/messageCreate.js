@@ -8,6 +8,23 @@ module.exports = {
         if (message.author.bot) return;
 
         try {
+            // Handle "خط" auto-reply (mistake command)
+            if (message.content.trim() === 'خط' && message.inGuild()) {
+                const MISTAKE_ROLE_ID = '1455192755088130216';
+                if (!message.member.roles.cache.has(MISTAKE_ROLE_ID)) return;
+
+                try {
+                    await message.delete();
+                } catch (e) {
+                    // ignore delete error
+                }
+
+                await message.channel.send({
+                    content: 'https://media.discordapp.net/attachments/1466099079288455230/1517651379299291206/839361839334424586.webp?ex=6a370e7d&is=6a35bcfd&hm=7659e2ce4a2c6f9a5b55728608b040333c9b2f3b8d44ba8e8bf25b5ad6187d87&=&format=webp&width=619&height=34'
+                });
+                return;
+            }
+
             // Handle -gstart prefix command for giveaways
             if (message.content.toLowerCase().startsWith('-gstart') && message.inGuild()) {
                 const giveawayCommand = client.commands.get('giveaway');
