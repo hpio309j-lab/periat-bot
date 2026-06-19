@@ -8,6 +8,22 @@ module.exports = {
         if (message.author.bot) return;
 
         try {
+            // Handle -gstart prefix command for giveaways
+            if (message.content.toLowerCase().startsWith('-gstart') && message.inGuild()) {
+                const giveawayCommand = client.commands.get('giveaway');
+                if (giveawayCommand && giveawayCommand.handleMessage) {
+                    try {
+                        await giveawayCommand.handleMessage(message, client);
+                    } catch (error) {
+                        console.error('Error executing -gstart command:', error);
+                        if (!message.replied) {
+                            await message.reply('An error occurred while starting the giveaway.');
+                        }
+                    }
+                    return;
+                }
+            }
+
             // Get guild configuration
             const guildConfig = await GuildConfig.findOne({ guildId: message.guild.id });
             if (!guildConfig) return;

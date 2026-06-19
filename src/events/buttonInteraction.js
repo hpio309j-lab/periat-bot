@@ -83,6 +83,20 @@ module.exports = {
                 await handleGiveawayEntry(interaction, giveawayId, client);
                 return;
             }
+
+            // Handle giveaway view button
+            if (customId.startsWith('giveaway_view_')) {
+                const giveawayId = customId.replace('giveaway_view_', '');
+                await handleGiveawayView(interaction, giveawayId, client);
+                return;
+            }
+
+            // Handle giveaway reroll button
+            if (customId.startsWith('giveaway_reroll_')) {
+                const giveawayId = customId.replace('giveaway_reroll_', '');
+                await handleGiveawayRerollButton(interaction, giveawayId, client);
+                return;
+            }
             
             // Handle quick games
             switch (customId) {
@@ -192,6 +206,133 @@ async function handleGiveawayEntry(interaction, giveawayId, client) {
         console.error('Error handling giveaway entry:', error);
         await interaction.reply({
             content: 'An error occurred while entering the giveaway.',
+            ephemeral: true
+        });
+    }
+}
+
+// Function to handle giveaway view
+async function handleGiveawayView(interaction, giveawayId, client) {
+    const Giveaway = require('../database/models/Giveaway');
+
+    try {
+        const giveaway = await Giveaway.findById(giveawayId);
+
+        if (!giveaway) {
+            return interaction.reply({
+                content: 'This giveaway no longer exists.',
+                ephemeral: true
+            });
+        }
+
+        const winnerText = giveaway.winners && giveaway.winners.length > 0
+            ? giveaway.winners.map(w => `<@${w}>`).join(', ')
+            : 'No winners';
+
+        const { EmbedBuilder } = require('discord.js');
+        const viewEmbed = new EmbedBuilder()
+            .setColor('#2ecc71')
+            .setTitle('🎉 Giveaway Results')
+            .setDescription(`**Prize:** ${giveaway.prize}`)
+            .addFields(
+                { name: 'Winner(s)', value: winnerText, inline: true },
+                { name: 'Hosted by', value: `<@${giveaway.hostId}>`, inline: true },
+                { name: 'Total Entries', value: `${giveaway.participants ? giveaway.participants.length : 0}`, inline: true }
+            )
+            .setFooter({ text: `Giveaway ID: ${giveaway._id}` })
+            .setTimestamp();
+
+        await interaction.reply({
+            embeds: [viewEmbed],
+            ephemeral: true
+        });
+    } catch (error) {
+        console.error('Error handling giveaway view:', error);
+        await interaction.reply({
+            content: 'An error occurred while viewing the giveaway.',
+            ephemeral: true
+        });
+    }
+}
+
+// Function to handle giveaway reroll button
+async function handleGiveawayRerollButton(interaction, giveawayId, client) {
+    const Giveaway = require('../database/models/Giveaway');
+    const { selectWinners } = require('../utils/giveawayManager');
+    const { EmbedBuilder } = require('discord.js');
+
+    try {
+        // Check permissions
+        if (!interaction.member?.permissions?.has(require('discord.js').PermissionFlagsBits.ManageEvents) &&
+            !interaction.member?.permissions?.has(require('discord.js').PermissionFlagsBits.ManageGuild)) {
+            return interaction.reply({
+                content: 'You need Manage Events or Manage Server permissions to reroll.',
+                ephemeral: true
+            });
+        }
+
+        const giveaway = await Giveaway.findById(giveawayId);
+
+        if (!giveaway || !giveaway.ended) {
+            return interaction.reply({
+                content: 'This giveaway has not ended yet or no longer exists.',
+                ephemeral: true
+            });
+        }
+
+        const channel = interaction.guild.channels.cache.get(giveaway.channelId);
+        if (!channel) {
+            return interaction.reply({
+                content: 'The channel for this giveaway no longer exists.',
+                ephemeral: true
+            });
+        }
+
+        const winners = await selectWinners(giveaway, giveaway.winnerCount, interaction.guild);
+
+        giveaway.winners = winners.map(w => w.id);
+        await giveaway.save();
+
+        const winnerText = winners.length > 0
+            ? winners.map(w => `<@${w.id}>`).join(', ')
+            : 'No valid participants';
+
+        if (winners.length > 0) {
+            await channel.send({
+                content: `Congratulations ${winnerText}! You won the reroll for **${giveaway.prize}**!`,
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor('#3498db')
+                        .setTitle('🎉 Giveaway Rerolled 🎉')
+                        .setDescription(`**Prize:** ${giveaway.prize}`)
+                        .addFields(
+                            { name: 'Winners', value: winnerText },
+                            { name: 'Original Giveaway', value: `[Jump to Giveaway](https://discord.com/channels/${giveaway.guildId}/${giveaway.channelId}/${giveaway.messageId})` }
+                        )
+                ]
+            });
+        } else {
+            await channel.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor('#3498db')
+                        .setTitle('🎉 Giveaway Rerolled 🎉')
+                        .setDescription(`No valid winner found for the reroll of **${giveaway.prize}**`)
+                        .addFields(
+                            { name: 'Original Giveaway', value: `[Jump to Giveaway](https://discord.com/channels/${giveaway.guildId}/${giveaway.channelId}/${giveaway.messageId})` }
+                        )
+                ]
+            });
+        }
+
+        await interaction.reply({
+            content: `Giveaway rerolled! ${winners.length > 0 ? `New winner(s): ${winnerText}` : 'No valid winners found.'}`,
+            ephemeral: true
+        });
+    } catch (error) {
+        console.error('Error handling giveaway reroll button:', error);
+        await interaction.reply({
+            content: 'An error occurred while rerolling the giveaway.',
             ephemeral: true
         });
     }
