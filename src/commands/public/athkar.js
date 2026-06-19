@@ -3,39 +3,39 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentTyp
 
 const athkarImages = {
     quran: [
-        'https://i.imgur.com/899xOK2.png',  // Quran image
-        'https://i.imgur.com/899xOK2.png',
-        'https://i.imgur.com/899xOK2.png'
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',  // Quran image
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758'
     ],
     hadith: [
-        'https://i.imgur.com/899xOK2.png',
-        'https://i.imgur.com/899xOK2.png',
-        'https://i.imgur.com/899xOK2.png'
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758'
     ],
     dua: [
-        'https://i.imgur.com/899xOK2.png',
-        'https://i.imgur.com/899xOK2.png',
-        'https://i.imgur.com/899xOK2.png'
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758'
     ],
     morning: [
-        'https://i.imgur.com/899xOK2.png',
-        'https://i.imgur.com/899xOK2.png',
-        'https://i.imgur.com/899xOK2.png'
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758'
     ],
     evening: [
-        'https://i.imgur.com/899xOK2.png',
-        'https://i.imgur.com/899xOK2.png',
-        'https://i.imgur.com/899xOK2.png'
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758'
     ],
     general: [
-        'https://i.imgur.com/899xOK2.png',  // General athkar image
-        'https://i.imgur.com/899xOK2.png',
-        'https://i.imgur.com/899xOK2.png'
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',  // General athkar image
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758'
     ],
     sleep: [
-        'https://i.imgur.com/899xOK2.png',  // Sleep athkar image
-        'https://i.imgur.com/899xOK2.png',
-        'https://i.imgur.com/899xOK2.png'
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',  // Sleep athkar image
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758',
+        'https://media.discordapp.net/attachments/1516928596524929174/1517575172490531028/9E8A79B0-7BF0-467A-AD0E-591B1610FE15.png?ex=6a36c784&is=6a357604&hm=baf93ce95ea95757e6bc6cd008088d3a0467fd471b2bf85766e2905bcd7a5836&=&format=webp&quality=lossless&width=1376&height=758'
     ]
 };
 
