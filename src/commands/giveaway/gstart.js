@@ -1,15 +1,12 @@
 const { 
     EmbedBuilder, 
-    PermissionFlagsBits,
-    ButtonBuilder,
-    ButtonStyle,
-    ActionRowBuilder
+    PermissionFlagsBits
 } = require('discord.js');
 const { createGiveaway } = require('../../utils/giveawayManager');
 const ms = require('ms');
 
-// لون الإمبيد الموحد لكل الجيف اواي (أزرق)
-const GIVEAWAY_COLOR = '#3498db';
+const GIVEAWAY_COLOR = '#1e3a5f'; // Dark Blue
+const GIVEAWAY_EMOJI = '🎉';
 
 module.exports = {
     name: 'gstart',
@@ -17,20 +14,12 @@ module.exports = {
     description: 'Start a new giveaway using the prefix command',
     usage: '-gstart <prize> <duration> <winners>',
 
-    /**
-     * مثال على الاستخدام:
-     * -gstart Nitro Boost 1h 1
-     * يعني الجائزة = "Nitro Boost"، المدة = "1h"، عدد الفائزين = "1"
-     * (آخر كلمتين دايم duration و winners، والباقي كله الجائزة)
-     */
     async execute(message, args, client) {
         try {
-            // لازم نكون داخل سيرفر
             if (!message.guild) {
                 return message.reply('هذا الأمر يشتغل فقط داخل السيرفر.');
             }
 
-            // فحص الصلاحيات
             if (
                 !message.member.permissions.has(PermissionFlagsBits.ManageEvents) &&
                 !message.member.permissions.has(PermissionFlagsBits.ManageGuild)
@@ -38,7 +27,6 @@ module.exports = {
                 return message.reply('تحتاج صلاحية Manage Events أو Manage Server عشان تبدأ جيف اواي.');
             }
 
-            // لازم 3 معطيات على الأقل: prize duration winners
             if (args.length < 3) {
                 return message.reply(
                     `استخدام خاطئ!\n` +
@@ -48,7 +36,6 @@ module.exports = {
                 );
             }
 
-            // آخر كلمتين = winners و duration، والباقي كله الجائزة
             const winnersRaw = args[args.length - 1];
             const durationStr = args[args.length - 2];
             const prize = args.slice(0, args.length - 2).join(' ');
@@ -59,13 +46,11 @@ module.exports = {
                 );
             }
 
-            // التحقق من عدد الفائزين
             const winnerCount = parseInt(winnersRaw, 10);
             if (isNaN(winnerCount) || winnerCount < 1 || winnerCount > 10) {
                 return message.reply('عدد الفائزين لازم يكون رقم بين 1 و 10.');
             }
 
-            // التحقق من المدة
             let duration;
             try {
                 duration = ms(durationStr);
@@ -82,7 +67,6 @@ module.exports = {
 
             const channel = message.channel;
 
-            // إنشاء الجيف اواي بقاعدة البيانات
             const giveaway = await createGiveaway({
                 prize,
                 channelId: channel.id,
@@ -93,41 +77,27 @@ module.exports = {
                 description: ''
             });
 
-            // حساب وقت الانتهاء
             const endTime = new Date(Date.now() + duration);
 
-            // بناء الإمبيد (أزرق غامق)
             const giveawayEmbed = new EmbedBuilder()
-                .setColor('#1e3a5f')
+                .setColor(GIVEAWAY_COLOR)
                 .setTitle('🎉 GIVEAWAY 🎉')
+                .setDescription(`**Prize:** ${prize}`)
                 .addFields(
-                    { name: 'Prize', value: prize, inline: true },
-                    { name: 'Ends', value: `<t:${Math.floor(endTime.getTime() / 1000)}:R>`, inline: true },
-                    { name: 'Winners', value: `${winnerCount}`, inline: true },
-                    { name: 'Hosted by', value: `<@${message.author.id}>`, inline: true },
-                    { name: 'Entries', value: '0 participants', inline: true }
+                    { name: '🔒 Hosted by', value: `<@${message.author.id}>`, inline: false },
+                    { name: '⏱ Ends', value: `<t:${Math.floor(endTime.getTime() / 1000)}:R>`, inline: false },
+                    { name: '👥 Entries', value: '0 participants', inline: false }
                 );
 
-            // زر الدخول
-            const row = new ActionRowBuilder().addComponents(
-                new ButtonBuilder()
-                    .setCustomId(`giveaway_enter_${giveaway._id}`)
-                    .setLabel('Enter Giveaway')
-                    .setStyle(ButtonStyle.Primary)
-                    .setEmoji('🎉')
-            );
+            // إرسال رسالة الجيف اواي بدون أزرار
+            const giveawayMessage = await channel.send({ embeds: [giveawayEmbed] });
 
-            // إرسال رسالة الجيف اواي
-            const giveawayMessage = await channel.send({
-                embeds: [giveawayEmbed],
-                components: [row]
-            });
+            // حط إيموجي ريأكشن للمشاركة
+            await giveawayMessage.react(GIVEAWAY_EMOJI);
 
-            // تحديث الـ messageId بقاعدة البيانات
             giveaway.messageId = giveawayMessage.id;
             await giveaway.save();
 
-            // حذف رسالة الأمر نفسها (اختياري - يخلي القناة نظيفة)
             if (message.deletable) {
                 message.delete().catch(() => {});
             }

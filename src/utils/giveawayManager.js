@@ -1,4 +1,4 @@
-const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const Giveaway = require('../database/models/Giveaway');
 const ms = require('ms');
 
@@ -55,47 +55,26 @@ async function endGiveaway(giveaway, client) {
                 : 'No valid participants';
             
             const endEmbed = new EmbedBuilder()
-                .setTitle('🎉 Giveaway Ended 🎉')
+                .setColor('#1e3a5f')
+                .setTitle('🎉 GIVEAWAY ENDED 🎉')
                 .setDescription(`**Prize:** ${giveaway.prize}`)
                 .addFields(
-                    { name: 'Winner(s)', value: winnerText },
-                    { name: 'Hosted by', value: `<@${giveaway.hostId}>` }
-                )
-                .setColor('#1e3a5f');
-            
-            // Update the original message
-            const row = new ActionRowBuilder().addComponents(
-                new ButtonBuilder()
-                    .setCustomId(`giveaway_view_${giveaway._id}`)
-                    .setLabel('View Giveaway')
-                    .setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder()
-                    .setCustomId(`giveaway_reroll_${giveaway._id}`)
-                    .setLabel('Reroll')
-                    .setStyle(ButtonStyle.Primary)
-            );
-            
-            await message.edit({ embeds: [endEmbed], components: [row] });
+                    { name: '🔒 Hosted by', value: `<@${giveaway.hostId}>`, inline: false },
+                    { name: '⏱ Ended', value: `<t:${Math.floor(Date.now() / 1000)}:R>`, inline: false },
+                    { name: '👥 Winner(s)', value: winnerText, inline: false }
+                );
+
+            // Update the original message — no buttons
+            await message.edit({ embeds: [endEmbed], components: [] });
             
             // Send winner announcement
             if (winners.length > 0) {
                 await channel.send({
-                    content: `Congratulations ${winnerText}! You won **${giveaway.prize}**!`,
-                    embeds: [
-                        new EmbedBuilder()
-                            .setTitle('🎉 Giveaway Winners 🎉')
-                            .setDescription(`You won the giveaway for **${giveaway.prize}**!`)
-                            .setColor('#1e3a5f')
-                    ]
+                    content: `Congratulations ${winnerText}! You won **${giveaway.prize}**!`
                 });
             } else {
                 await channel.send({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setTitle('🎉 Giveaway Ended 🎉')
-                            .setDescription(`No valid winner for **${giveaway.prize}**`)
-                            .setColor('#1e3a5f')
-                    ]
+                    content: `No valid winner found for **${giveaway.prize}**!`
                 });
             }
         } catch (err) {

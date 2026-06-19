@@ -2,9 +2,6 @@ const {
     SlashCommandBuilder,
     EmbedBuilder,
     PermissionFlagsBits,
-    ButtonBuilder,
-    ButtonStyle,
-    ActionRowBuilder,
     ChannelType
 } = require('discord.js');
 
@@ -13,6 +10,7 @@ const { createGiveaway, formatTimeRemaining, endGiveaway: endGiveawayFlow, selec
 const ms = require('ms');
 
 const GIVEAWAY_COLOR = '#1e3a5f'; // Dark Blue
+const GIVEAWAY_EMOJI = '🎉';
 const PREFIX_START = '-gstart';    // Example: -gstart Nitro Boost 1d 3
 
 module.exports = {
@@ -197,22 +195,19 @@ function parsePrefixStart(content) {
 }
 
 function buildGiveawayEmbed({ prize, winnerCount, endTime, hostId, giveawayId, description, entries }) {
-    const fields = [
-        { name: 'Prize', value: prize, inline: true },
-        { name: 'Ends', value: `<t:${Math.floor(endTime.getTime() / 1000)}:R>`, inline: true },
-        { name: 'Winners', value: `${winnerCount}`, inline: true },
-        { name: 'Hosted by', value: `<@${hostId}>`, inline: true },
-        { name: 'Entries', value: `${entries} participant${entries === 1 ? '' : 's'}`, inline: true }
-    ];
-
-    if (description) {
-        fields.push({ name: 'Description', value: description, inline: false });
-    }
-
     const embed = new EmbedBuilder()
         .setColor(GIVEAWAY_COLOR)
         .setTitle('🎉 GIVEAWAY 🎉')
-        .addFields(fields);
+        .setDescription(`**Prize:** ${prize}`)
+        .addFields(
+            { name: '🔒 Hosted by', value: `<@${hostId}>`, inline: false },
+            { name: '⏱ Ends', value: `<t:${Math.floor(endTime.getTime() / 1000)}:R>`, inline: false },
+            { name: '👥 Entries', value: `${entries} participant${entries === 1 ? '' : 's'}`, inline: false }
+        );
+
+    if (description) {
+        embed.addFields({ name: '📝 Description', value: description, inline: false });
+    }
 
     return embed;
 }
@@ -260,18 +255,11 @@ async function createAndSendGiveaway({ guild, channel, hostId, prize, durationSt
         entries: 0
     });
 
-    const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-            .setCustomId(`giveaway_enter_${giveaway._id}`)
-            .setLabel('Enter Giveaway')
-            .setStyle(ButtonStyle.Primary)
-            .setEmoji('🎉')
-    );
+    // Send embed only — no buttons
+    const giveawayMessage = await channel.send({ embeds: [giveawayEmbed] });
 
-    const giveawayMessage = await channel.send({
-        embeds: [giveawayEmbed],
-        components: [row]
-    });
+    // React with emoji for entry
+    await giveawayMessage.react(GIVEAWAY_EMOJI);
 
     giveaway.messageId = giveawayMessage.id;
     await giveaway.save();
@@ -413,8 +401,8 @@ async function rerollGiveawaySlash(interaction, client) {
                         .setTitle('🎉 Giveaway Rerolled 🎉')
                         .setDescription(`**Prize:** ${giveaway.prize}`)
                         .addFields(
-                            { name: 'Winners', value: winnerText },
-                            { name: 'Original Giveaway', value: `[Jump to Giveaway](https://discord.com/channels/${giveaway.guildId}/${giveaway.channelId}/${giveaway.messageId})` }
+                            { name: '🔒 Hosted by', value: `<@${giveaway.hostId}>`, inline: false },
+                            { name: '👥 Winner(s)', value: winnerText, inline: false }
                         )
                 ]
             });
@@ -426,7 +414,7 @@ async function rerollGiveawaySlash(interaction, client) {
                         .setTitle('🎉 Giveaway Rerolled 🎉')
                         .setDescription(`No valid winner found for the reroll of **${giveaway.prize}**`)
                         .addFields(
-                            { name: 'Original Giveaway', value: `[Jump to Giveaway](https://discord.com/channels/${giveaway.guildId}/${giveaway.channelId}/${giveaway.messageId})` }
+                            { name: '🔒 Hosted by', value: `<@${giveaway.hostId}>`, inline: false }
                         )
                 ]
             });
@@ -462,8 +450,7 @@ async function listGiveawaysSlash(interaction, client) {
         const embed = new EmbedBuilder()
             .setColor(GIVEAWAY_COLOR)
             .setTitle('🎉 Active Giveaways')
-            .setDescription(`There are ${giveaways.length} active giveaways in this server.`)
-            .setTimestamp();
+            .setDescription(`There are ${giveaways.length} active giveaways in this server.`);
 
         for (let i = 0; i < giveaways.length; i++) {
             const g = giveaways[i];
@@ -478,9 +465,9 @@ async function listGiveawaysSlash(interaction, client) {
                     `**Winners:** ${g.winnerCount}`,
                     `**Entries:** ${entries} participant${entries === 1 ? '' : 's'}`,
                     `**Ends:** ${timeRemaining}`,
-                    `**Message ID:** ${g.messageId}`,
                     `**Jump to Giveaway:** [Click here](https://discord.com/channels/${g.guildId}/${g.channelId}/${g.messageId})`
-                ].join('\n')
+                ].join('\n'),
+                inline: false
             });
         }
 
@@ -598,22 +585,19 @@ async function editGiveawaySlash(interaction, client) {
             const message = await channel.messages.fetch(giveaway.messageId);
             const entryCount = giveaway.participants ? giveaway.participants.length : 0;
 
-            const updateFields = [
-                { name: 'Prize', value: giveaway.prize, inline: true },
-                { name: 'Ends', value: `<t:${Math.floor(giveaway.endTime.getTime() / 1000)}:R>`, inline: true },
-                { name: 'Winners', value: `${giveaway.winnerCount}`, inline: true },
-                { name: 'Hosted by', value: `<@${giveaway.hostId}>`, inline: true },
-                { name: 'Entries', value: `${entryCount} participant${entryCount === 1 ? '' : 's'}`, inline: true }
-            ];
-
-            if (giveaway.description) {
-                updateFields.push({ name: 'Description', value: giveaway.description, inline: false });
-            }
-
             const updatedEmbed = new EmbedBuilder()
                 .setColor(GIVEAWAY_COLOR)
                 .setTitle('🎉 GIVEAWAY 🎉')
-                .addFields(updateFields);
+                .setDescription(`**Prize:** ${giveaway.prize}`)
+                .addFields(
+                    { name: '🔒 Hosted by', value: `<@${giveaway.hostId}>`, inline: false },
+                    { name: '⏱ Ends', value: `<t:${Math.floor(giveaway.endTime.getTime() / 1000)}:R>`, inline: false },
+                    { name: '👥 Entries', value: `${entryCount} participant${entryCount === 1 ? '' : 's'}`, inline: false }
+                );
+
+            if (giveaway.description) {
+                updatedEmbed.addFields({ name: '📝 Description', value: giveaway.description, inline: false });
+            }
 
             await message.edit({ embeds: [updatedEmbed] });
         } catch (error) {
